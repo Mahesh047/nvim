@@ -7,7 +7,7 @@ return {
     end,
   },
 	-- Highlight todo, notes, etc in comments
-	{ "folke/todo-comments.nvim", dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
+	{ "folke/todo-comments.nvim", lazy = false, dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
 		config = function()
@@ -94,6 +94,74 @@ return {
         --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end
   },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    lazy = false,
+
+  },
+  {
+      'tzachar/local-highlight.nvim',
+      lazy = false,
+      config = function()
+        require('local-highlight').setup()
+      end
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    lazy = false,
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+  },
+  {
+    "natecraddock/workspaces.nvim",
+    lazy = false,
+    config = function ()
+      require("workspaces").setup({
+        hooks = {
+            open_pre = {
+              -- If recording, save current session state and stop recording
+              "SessionsStop",
+
+              -- delete all buffers (does not save changes)
+              "silent %bdelete!",
+            },
+            open = {
+              function ()
+                require("sessions").load(nil, { silent = true })
+              end,
+              "NvimTreeOpen",
+            },
+        }
+      })
+      require("telescope").load_extension("workspaces")
+    end,
+  },
+  {
+    "natecraddock/sessions.nvim",
+    lazy = false,
+    config = function ()
+      require("sessions").setup({
+        -- autocmd events which trigger a session save
+        --
+        -- the default is to only save session files before exiting nvim.
+        -- you may wish to also save more frequently by adding "BufEnter" or any
+        -- other autocmd event
+        events = { "VimLeave" },
+
+        -- default session filepath
+        --
+        -- if a path is provided here, then the path argument for commands and API
+        -- functions will use session_filepath as a default if no path is provided.
+        session_filepath = ".nvim/session",
+
+        -- treat the default session filepath as an absolute path
+        -- if true, all session files will be stored in a single directory
+        absolute = false,
+    })
+    end,
+  },
+
   --
   -- {
   -- 	"williamboman/mason.nvim",
@@ -105,13 +173,13 @@ return {
   -- 	},
   -- },
   --
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
+  {
+  	"nvim-treesitter/nvim-treesitter",
+  	opts = {
+  		ensure_installed = {
+  			"vim", "lua", "vimdoc",
+       "html", "css"
+  		},
+  	},
+  },
 }
