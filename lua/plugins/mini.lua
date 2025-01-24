@@ -20,7 +20,7 @@ return { -- Collection of various small independent plugins/modules
     -- Simple and easy statusline.
     --  You could remove this setup call if you don't like it,
     --  and try some other statusline plugin
-    require("mini.statusline").setup()
+    -- require("mini.statusline").setup()
     -- ... and there is more!
     --  Check out: https://github.com/echasnovski/mini.nvim
   end,

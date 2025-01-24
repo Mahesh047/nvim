@@ -34,10 +34,15 @@ require('gitsigns').setup{
     map('n', '<leader>gu', gitsigns.undo_stage_hunk, {desc = "[g]itsigns [u]ndo stage hunk"})
     map('n', '<leader>gR', gitsigns.reset_buffer, {desc = "[g]itsigns [R]eset buffer"})
     map('n', '<leader>gp', gitsigns.preview_hunk, {desc = "[g]itsigns [p]review hunk"})
+    map('n', '<leader>gP', gitsigns.preview_hunk_inline, {desc = "[g]itsigns [P]review hunk inline"})
     map('n', '<leader>gb', function() gitsigns.blame_line{full=true} end, {desc = "[g]itsigns [b]lame line"})
-    -- map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-    -- map('n', '<leader>hd', gitsigns.diffthis)
+    map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+    map('n', '[g', gitsigns.prev_hunk, {desc = "[g]itsigns prev hunk"})
+    map('n', ']g', gitsigns.next_hunk, {desc = "[g]itsigns next hunk"})
+
+    map('n', '<leader>gd', gitsigns.diffthis)
     -- map('n', '<leader>hD', function() gitsigns.diffthis('~') end)
+        -- ---dkfafa
     -- map('n', '<leader>td', gitsigns.toggle_deleted)
 
     -- Text object

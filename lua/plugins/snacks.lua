@@ -20,7 +20,10 @@ return {
       notification = {
         -- wo = { wrap = true } -- Wrap notifications
       }
-    }
+    },
+    profiler = {
+            enabled = true
+        }
   },
   keys = {
     { "<leader>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
@@ -40,6 +43,9 @@ return {
     { "<c-_>",      function() Snacks.terminal() end, desc = "which_key_ignore" },
     { "]]",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
     { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+    { "<leader>pp", function() Snacks.toggle.profiler() end, desc = "Prev Reference", mode = { "n", "t" } },
+    { "<leader>ph", function() Snacks.toggle.profiler_highlights() end, desc = "Prev Reference", mode = { "n", "t" } },
+    { "<leader>ps", function() Snacks.profiler.scratch() end, desc = "Prev Reference", mode = { "n", "t" } },
     {
       "<leader>N",
       desc = "Neovim News",
@@ -87,4 +93,7 @@ return {
       end,
     })
   end,
+    -- config = function()
+    --   require "configs.snacks"
+    -- end,
 }

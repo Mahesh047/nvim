@@ -5,6 +5,7 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
+map("v", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
@@ -56,8 +57,16 @@ map("i", "jk", "<ESC>")
 -- vim.keymap.set("n", "<leader>l", function() harpoon:list():add() end)
 -- vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 --
+
 -- vim.keymap.set("n", "<M-1>", function() harpoon:list():select(1) end)
 -- vim.keymap.set("n", "<M-2>", function() harpoon:list():select(2) end)
 -- vim.keymap.set("n", "<M-3>", function() harpoon:list():select(3) end)
 -- vim.keymap.set("n", "<M-4>", function() harpoon:list():select(4) end)
--- VS code tasks
+-- Quickfix keymaps
+vim.keymap.set("n","<M-j>", "<cmd>cnext<CR>zzzv")
+vim.keymap.set("n","<M-k>", "<cmd>cprev<CR>zzzv")
+-- Move text is visual mode
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv") 
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")

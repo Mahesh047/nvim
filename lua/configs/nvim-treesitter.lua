@@ -7,6 +7,7 @@ require("nvim-treesitter.configs").setup {
   ensure_installed = {
     "go",
     "lua",
+    "luadoc",
     "python",
     "rust",
     "typescript",
@@ -25,6 +26,8 @@ require("nvim-treesitter.configs").setup {
     "json",
     "toml",
     "proto",
+    "vim",
+    "vimdoc",
   },
 
   highlight = { enable = true },
