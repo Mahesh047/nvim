@@ -29,12 +29,6 @@ return {
     "AnotherProksY/ez-window",
     lazy = false,
   },
-  {
-    "lewis6991/gitsigns.nvim",
-    config = function()
-      require "configs.git-signs"
-    end,
-  },
   -- Highlight todo, notes, etc in comments
   { "folke/todo-comments.nvim", lazy = false, dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
   -- These are some examples, uncomment them if you want to see them work!
@@ -68,24 +62,6 @@ return {
           ) or require("lspconfig.util").find_git_ancestor(fname)
         end,
       }
-    end,
-  },
-  {
-    "kdheepak/lazygit.nvim",
-    cmd = {
-      "LazyGit",
-      "LazyGitConfig",
-      "LazyGitCurrentFile",
-      "LazyGitFilter",
-      "LazyGitFilterCurrentFile",
-    },
-    -- optional for floating window border decoration
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    config = function()
-      require("telescope").load_extension "lazygit"
     end,
   },
   {
@@ -168,4 +144,19 @@ return {
       }
     end,
   },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+        ---@module 'render-markdown'
+        opts = {},
+        ft = { 'markdown', 'copilot-chat' },
+        config = function()
+            require('render-markdown').setup({
+                render_modes = true,
+                file_types = {'markdown', 'copilot-chat'},
+})
+        end
+}
 }

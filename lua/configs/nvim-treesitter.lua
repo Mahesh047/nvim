@@ -17,7 +17,6 @@ require("nvim-treesitter.configs").setup {
     "markdown_inline",
     "kdl",
     "sql",
-    "org",
     "terraform",
     "html",
     "css",
