@@ -1,0 +1,96 @@
+local window_utils = require("custom.utils.windows")
+
+local function get_build_cmd()
+    local build_cmd = nil
+    -- local error_format = nil
+
+    local projectName = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+    if string.match(projectName, "LittleJohn.ECL.Mockup") then
+        -- error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "LittleJohn.ECL.Radio.Mockup") then
+        -- error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "BaumeisterC") then
+        build_cmd = "sh Setup/BuildSetup/BuildScript.sh -clean"
+        -- error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "Alsmart.ECL.MainController.Main") then
+        build_cmd = "cmake -S ./ -B Output/VSCode -GNinja -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_OPTIMISATION=Size -DBUILD_HW_VARIANT:STRING=Pro -DOPTION_GENERATE_ECF:BOOL=ON && cmake --build Output/VSCode --clean-first -j16"
+        -- error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+
+    elseif string.match(projectName, "Alsmart.ECL.IO.Main") then
+        build_cmd = "cmake -B build/Debug -DCMAKE_CXX_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ -DCMAKE_C_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -DBUILD_TYPE=FIRMWARE && cmake --build build/Debug/ --parallel"
+        -- error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "Alsmart.ECL.ISO.Main") then
+        build_cmd = "cmake -B build/Debug -DCMAKE_CXX_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ -DCMAKE_C_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -DBUILD_TYPE=FIRMWARE && cmake --build build/Debug/ --parallel"
+        -- error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "LittleJohn.Tools.Baumeister") then
+        build_cmd = "cargo build --target-dir 'C:/Development/ECL/LittleJohn.Tools.Baumeister/Build'"
+    else
+        -- set default cmd
+        build_cmd = "hello_make"
+    end
+
+    if build_cmd then
+        vim.opt.makeprg = build_cmd
+    end
+    -- if error_format then
+        -- vim.opt.errorformat = error_format
+    -- end
+end
+
+
+
+local M = {}
+
+function M.make()
+    get_build_cmd()
+    local bufnr, winid = window_utils.get_window_config()
+
+    if bufnr == 0 or winid == 0 or vim.api.nvim_win_is_valid(winid) then
+        bufnr, winid = window_utils.drawWindow()
+    end
+    local lines = {""}
+
+    local cmd = vim.o.makeprg
+    if not cmd then return end
+
+    print(cmd)
+
+    local function on_event(job_id, data, event)
+        vim.cmd("compiler gcc")
+        if event == "stdout" or event == "stderr" then
+            if data then
+                vim.list_extend(lines, data)
+            end
+            vim.api.nvim_buf_set_lines(bufnr,0,0,false,lines)
+        end
+
+        if event == "exit" then
+            vim.fn.setqflist({}, " ", {
+                title = cmd,
+                lines = lines,
+                efm = vim.o.errorformat
+            })
+            vim.notify("[Compilation done]")
+            vim.api.nvim_command("doautocmd QuickFixCmdPost")
+            local temp_win=vim.api.nvim_get_current_win()
+            vim.api.nvim_set_current_win(winid)
+            local win_width = math.floor(vim.o.columns/2)
+            vim.api.nvim_command("vertical rightbelow copen "..win_width)
+            vim.api.nvim_set_current_win(temp_win)
+        end
+    end
+
+    local job_id = vim.fn.jobstart(
+        cmd,
+        {
+            on_stderr = on_event,
+            on_stdout = on_event,
+            on_exit = on_event,
+            stdout_buffered = true,
+            stderr_buffered = true,
+        }
+    )
+end
+
+
+return M

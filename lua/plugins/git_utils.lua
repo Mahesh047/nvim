@@ -2,6 +2,7 @@ return {
     {
 
         "lewis6991/gitsigns.nvim",
+        event = "BufReadPost",
         config = function()
             require "configs.git-signs"
         end,

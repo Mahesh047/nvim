@@ -1,6 +1,5 @@
 return {
   "EthanJWright/vs-tasks.nvim",
-  lazy = false,
   keys = {
     {
       "<Leader>ta",

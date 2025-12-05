@@ -1,0 +1,53 @@
+local function get_build_cmd()
+    local build_cmd = nil
+    local error_format = nil
+
+    local projectName = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+    if string.match(projectName, "LittleJohn.ECL.Mockup") then
+        error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "LittleJohn.ECL.Radio.Mockup") then
+        error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "BaumeisterC") then
+        build_cmd = "sh Setup/BuildSetup/BuildScript.sh -clean"
+        error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "Alsmart.ECL.MainController.Main") then
+        build_cmd = "cmake -S ./ -B Output/VSCode -GNinja -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_OPTIMISATION=Size -DBUILD_HW_VARIANT:STRING=Pro -DOPTION_GENERATE_ECF:BOOL=ON && cmake --build Output/VSCode -j16"
+        error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+
+    elseif string.match(projectName, "Alsmart.ECL.IO.Main") then
+        build_cmd = "cmake -B build/Debug -DCMAKE_CXX_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ -DCMAKE_C_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -DBUILD_TYPE=FIRMWARE && cmake --build build/Debug/ --parallel"
+        error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "Alsmart.ECL.ISO.Main") then
+        build_cmd = "cmake -B build/Debug -DCMAKE_CXX_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ -DCMAKE_C_COMPILER=/home/abdul/development/toolchain/arm_gcc/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -DBUILD_TYPE=FIRMWARE && cmake --build build/Debug/ --parallel"
+        error_format = [[%f:%l:%c:\ %t%*[^:]:\ %m]]
+    elseif string.match(projectName, "LittleJohn.Tools.Baumeister") then
+        build_cmd = "cargo build --target-dir 'C:/Development/ECL/LittleJohn.Tools.Baumeister/Build'"
+    else
+        -- set default cmd
+    end
+
+    if build_cmd then
+        vim.opt.makeprg = build_cmd
+    end
+    if error_format then
+        vim.opt.errorformat = error_format
+    end
+end
+
+local function push_pending(line)
+    if not pending_qf_lines or type(pending_qf_lines) ~= "table" then
+        pending_qf_lines = {}
+    end
+    if line and (line:match("[Ee]rror:") or line:match("[Ww]arning:") or line:match("%.%w+:%d+:%d+:")) then
+        pending_qf_lines[#pending_qf_lines + 1] = line
+    end
+end
+
+local function strip_ansi(s)
+    if not s then return s end
+    return (s:gsub("\27%[[0-9;]-m", ""):gsub("\r", ""))
+end
+ 
+get_build_cmd()
+
+return {}

@@ -11,6 +11,9 @@ return {
             --         layout_config={width=0.8}
             --     },
             -- },
+            extensions = {
+                fzf = {},
+            }
 
         }
     end,
